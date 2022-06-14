@@ -98,6 +98,6 @@ def main():
     print("The program has been terminated.")
 
 if __name__ == "__main__":
-    # if authorize():
-    #     pass
+    if authorize():
+        pass
     main()
