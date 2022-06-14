@@ -99,5 +99,4 @@ def main():
 
 if __name__ == "__main__":
     if authorize():
-        pass
-    main()
+        main()
