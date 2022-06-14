@@ -54,7 +54,7 @@ def make_employee(row):
 
 def get_employees():
     
-    reset_auto_inc()
+    # reset_auto_inc()
     
     query = "SELECT employeeid, name, username, password, email, role, salary FROM employees INNER JOIN roles ON employees.roleid = roles.roleid;"
     
