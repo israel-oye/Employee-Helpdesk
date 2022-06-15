@@ -15,7 +15,7 @@ def authorize():
         if employee.email == email and employee.password == password:
             admin_found = True
 
-    db.close_connection()
+    # db.close_connection()
 
     if admin_found:
         return True
