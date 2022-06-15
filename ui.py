@@ -11,7 +11,7 @@ def authorize():
     all_admins = db.get_admins()
 
     for employee in all_admins:
-        # print(employee.name, employee.password)
+        
         if employee.email == email and employee.password == password:
             admin_found = True
 
@@ -74,7 +74,16 @@ def delete_employee():
 
 def main():
     db.connect_database()
+    username = input("Enter your username: ")
+    password = input("Password: ")
+
+    while True:
+        if db.login(username, password, 4): #generic login
+            break
+        else:
+            print("Invalid credentials. Please try again\n\n")
     display_menu()
+
     flag = True
 
     while flag:
@@ -96,7 +105,8 @@ def main():
 
     db.close_connection()
     print("The program has been terminated.")
+        
 
 if __name__ == "__main__":
-    if authorize():
-        main()
+    #if authorize(): #this would only start the system if you're admin
+     main()
