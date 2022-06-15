@@ -1,6 +1,6 @@
 import pymysql
 from contextlib import closing
-from objects import Employee
+from admin.objects import Employee
 
 conn = None
 
@@ -116,7 +116,7 @@ def get_admins():
     return admins
 
 def login(username, password, role_id):
-    query = "SELECT COUNT(*) FROM employees WHERE name = %s AND password = %s AND roleid = %s;"
+    query = "SELECT COUNT(*) FROM employees WHERE username = %s AND password = %s AND roleid = %s;"
 
     with closing(conn.cursor()) as cursor:
         cursor.execute(query, (username, password, role_id))

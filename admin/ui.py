@@ -1,5 +1,5 @@
-import db, time
-from objects import Employee
+import admin.db as db, time
+from admin.objects import Employee
 
 def authorize():
     db.connect_database()
@@ -33,6 +33,7 @@ def display_menu():
             add - Add an employee\n\
             del - Delete an employee\n\
             exit - Exit the application.\n\
+            menu - View option menu\n\
             --------------------------------")
 
 def view_employees():
@@ -58,6 +59,7 @@ def add_employee():
 
     employee_obj = Employee(name=employee_name, username=employee_uname, password=employee_password, email=employee_mail, role_id=employee_role_id, salary=employee_salary)
     db.create_employee(employee=employee_obj)
+    time.sleep(0.66)
     print("Employee created succesfuly.\n\n")
 
 def delete_employee():
@@ -74,14 +76,19 @@ def delete_employee():
 
 def main():
     db.connect_database()
-    username = input("Enter your username: ")
-    password = input("Password: ")
+    
 
     while True:
+        username = input("Enter your username: ")
+        password = input("Password: ")
+
         if db.login(username, password, 4): #generic login
+            print("Log in successful.")
+            time.sleep(1.3)
             break
         else:
             print("Invalid credentials. Please try again\n\n")
+
     display_menu()
 
     flag = True
