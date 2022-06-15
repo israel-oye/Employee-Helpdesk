@@ -54,7 +54,7 @@ def make_employee(row):
 
 def get_employees():
     
-    # reset_auto_inc()
+    reset_auto_inc()
     
     query = "SELECT employeeid, name, username, password, email, role, salary FROM employees INNER JOIN roles ON employees.roleid = roles.roleid;"
     
@@ -113,10 +113,19 @@ def get_admins():
         for row in result:
             admins.append(make_employee(row=row))
         
-
     return admins
 
+def login(username, password, role_id):
+    query = "SELECT COUNT(*) FROM employees WHERE name = %s AND password = %s AND roleid = %s;"
 
+    with closing(conn.cursor()) as cursor:
+        cursor.execute(query, (username, password, role_id))
+        result = cursor.fetchone()
+
+        if result[0] > 0:
+            return True
+        else:
+            return False
 
 
 
