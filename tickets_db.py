@@ -25,6 +25,17 @@ def close_connection():
     if connection:
         connection.close()
 
+def reset_auto_inc():
+    query_1 = "SET @count :=0;"
+    query_2 = "UPDATE tickets SET ticketid = @count :=1 ;"
+    query_3 = "ALTER TABLE tickets AUTO_INCREMENT = 1;"
+
+    connect_database()
+    with closing(connection.cursor()) as cursor:
+        cursor.execute(query_1)
+        cursor.execute(query_2)
+        cursor.execute(query_3)
+
 def create_ticket(ticket):
     query = "INSERT INTO tickets (statusid, solutionid, employeeid, issue, customername, customeremail, sumbitteddate)\
              VALUES(%s, %s, %s, %s, %s, %s, %s,);"
@@ -45,6 +56,8 @@ def make_ticket(row):
     )
 
 def get_open_tickets():
+    reset_auto_inc()
+
     query = ("SELECT tickets.ticketid, status.status, solutions.solution, employees.name AS employee "+
              "tickets.customername, tickets.customeremail, tickets.submitteddate, tickets.issue "+
              "FROM employees INNER JOIN "+
@@ -73,6 +86,8 @@ def get_open_ticket(ticket_id):
     return ticket
 
 def get_ticket_issue(ticket_id):
+    reset_auto_inc()
+    
     query = "SELECT issue FROM tickets WHERE ticketid = %s"
 
     with closing(connection.cursor()) as cursor:
@@ -88,7 +103,7 @@ def update_ticket(statusid, ticket_id):
         cursor.execute(query, (statusid, ticket_id))
 
 def login(username, password):
-    query = "SELECT COUNT(*) FROM tickets WHERE "
+    query = "SELECT COUNT(*) FROM employees WHERE username = %s AND password = %s;"
 
     with closing(connection.cursor()) as cursor:
         cursor.execute(query, (username, password))
