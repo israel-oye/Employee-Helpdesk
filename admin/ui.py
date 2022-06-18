@@ -26,7 +26,7 @@ def authorize():
 
 def display_menu():
     
-    print("Vecta Corp Help Desk Apllication (Admin)\n\
+    print("Vecta Corp Help Desk Aplication (Admin)\n\
         COMMAND VIEW\n\
             --------------------------------\n\
             view - View all employees\n\
