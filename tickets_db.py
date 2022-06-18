@@ -1,6 +1,9 @@
+from time import strftime
 import pymysql
 from contextlib import closing
 from ticket_object import Ticket
+from datetime import datetime as dt
+
 
 connection = None
 
@@ -27,7 +30,7 @@ def close_connection():
 
 def reset_auto_inc():
     query_1 = "SET @count :=0;"
-    query_2 = "UPDATE tickets SET ticketid = @count :=1 ;"
+    query_2 = "UPDATE tickets SET ticketid = @count := (@count+1) ;"
     query_3 = "ALTER TABLE tickets AUTO_INCREMENT = 1;"
 
     connect_database()
@@ -37,13 +40,16 @@ def reset_auto_inc():
         cursor.execute(query_3)
 
 def create_ticket(ticket):
-    query = "INSERT INTO tickets (statusid, solutionid, employeeid, issue, customername, customeremail, sumbitteddate)\
-             VALUES(%s, %s, %s, %s, %s, %s, %s,);"
+    reset_auto_inc()
+
+    query = "INSERT INTO tickets (statusid, solutionid, employeeid, issue, customername, customeremail, submitteddate)\
+             VALUES(%s, %s, %s, %s, %s, %s, %s);"
 
     with closing(connection.cursor()) as cursor:
         cursor.execute(query, (ticket.status_id, ticket.solution_id, ticket.employee_id, ticket.issue, ticket.customer_name, ticket.customer_email, ticket.submission_date))
 
 def make_ticket(row):
+    date = row[7]
     return Ticket(
         Ticket_ID=row[0],
         Status_ID=row[1],
@@ -52,20 +58,23 @@ def make_ticket(row):
         Issue=row[4],
         Customer_Name=row[5],
         Customer_Email=row[6],
-        Submitted_Date=row[7]
+        Submitted_Date=date.strftime("%y/%m/%d")
     )
 
 def get_open_tickets():
     reset_auto_inc()
 
-    query = ("SELECT tickets.ticketid, status.status, solutions.solution, employees.name AS employee "+
-             "tickets.customername, tickets.customeremail, tickets.submitteddate, tickets.issue "+
+    query = ("SELECT tickets.ticketid, status.status, solutions.solution, employees.name AS employee, "+
+             "tickets.issue, tickets.customername, tickets.customeremail, tickets.submitteddate "+
              "FROM employees INNER JOIN "+
              "tickets ON employees.employeeid = tickets.employeeid INNER JOIN "+
              "solutions ON tickets.solutionid = solutions.solutionid INNER JOIN "+
              "status ON tickets.statusid = status.statusid "+
-             "WHERE tickets.statusid=1 OR tickets.statusid=2;"
+             "WHERE tickets.statusid=1 OR tickets.statusid=2 "+
+             "ORDER BY tickets.ticketid;"
             )
+
+    
 
     with closing(connection.cursor()) as cursor:
         cursor.execute(query)
@@ -87,13 +96,13 @@ def get_open_ticket(ticket_id):
 
 def get_ticket_issue(ticket_id):
     reset_auto_inc()
-    
+
     query = "SELECT issue FROM tickets WHERE ticketid = %s"
 
     with closing(connection.cursor()) as cursor:
         cursor.execute(query, (ticket_id))
-        result = cursor.fetchone()
-        issue = make_ticket(result).issue
+        issue = str(cursor.fetchone()[0])
+        
     return issue
 
 def update_ticket(statusid, ticket_id):
@@ -113,3 +122,4 @@ def login(username, password):
             return True
         else:
             return False
+
