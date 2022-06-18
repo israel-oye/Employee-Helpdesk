@@ -101,6 +101,17 @@ def delete_employee(employee_id):
         cursor.execute(query)
     reset_auto_inc()
 
+def get_employee_roles():
+    '''Gets employees with their roles'''
+
+    query = "SELECT * FROM employee-roles;"
+
+    with closing(conn.cursor()) as cursor:
+        cursor.execute(query)
+        all_employee_roles = cursor.fetchall()
+
+    return all_employee_roles
+
 def get_admins():
     reset_auto_inc()
     query = f"SELECT * FROM employees WHERE roleid = 4;"
