@@ -1,6 +1,7 @@
 import tickets_db as db, time
 from ticket_object import Ticket
 from datetime import datetime as dt
+from admin import db as employee_db
 
 def display_menu():
     
@@ -36,11 +37,23 @@ def view_issue(ticketid):
     
 
 def add_issue():
+    
+    def display_employees_roles():
+        Employees = employee_db.get_employee_roles()
+        
+        line_format = "{:5s} {:10s} {:15s}"
+        print('-'*80)
+        print(line_format.format("ID", "Name", "Roles"))
+        print('-'*80)
+        for emp in Employees:
+            print(line_format.format(str(emp[0]), emp[1], emp[2]))
+
     status_id = 1
     solution_id = int(input("Solution ID: 1-vProspect 2-vConvert 3-vRetain: "))
+    display_employees_roles()
     employee = input("Employee ID: ")
     issue_opened = input("What's was customer issue: ")
-    cust_name = input("Customer name: ")
+    cust_name = input("Customer name: ").title()
     cust_mail = input("Customer email: ")
     date_of_issue = dt.now().strftime("%d/%m/%y")
 
@@ -80,7 +93,7 @@ def main():
         username = input("Username: ")
         password = input("Password: ")
         if db.login(username=username, password=password):
-            print("...Log in successful")
+            print("...Log in successful\n")
             time.sleep(0.65)
             break
         else:
