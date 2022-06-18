@@ -103,8 +103,8 @@ def delete_employee(employee_id):
 
 def get_employee_roles():
     '''Gets employees with their roles'''
-
-    query = "SELECT * FROM employee-roles;"
+    connect_database()
+    query = "SELECT * FROM `employee-roles`;"
 
     with closing(conn.cursor()) as cursor:
         cursor.execute(query)
