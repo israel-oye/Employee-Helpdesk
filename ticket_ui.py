@@ -1,7 +1,9 @@
+from datetime import datetime as dt
+
+from admin import db as employee_db
+
 import tickets_db as db, time
 from ticket_object import Ticket
-from datetime import datetime as dt
-from admin import db as employee_db
 
 def display_menu():
     

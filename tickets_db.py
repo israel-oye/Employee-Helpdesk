@@ -1,6 +1,8 @@
-from time import strftime
-import pymysql
 from contextlib import closing
+from time import strftime
+
+import pymysql
+
 from ticket_object import Ticket
 from datetime import datetime as dt
 
